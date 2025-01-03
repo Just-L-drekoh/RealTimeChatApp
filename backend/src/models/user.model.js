@@ -4,26 +4,30 @@ const userSchema = new mongoose.Schema(
   {
     email: {
       type: String,
-      required: true,
+      required: [true, "Email is required"],
       unique: true,
+      match: [
+        /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+        "Please add a valid email",
+      ],
     },
     firstName: {
       type: String,
-      required: true,
+      required: [true, "First name is required"],
     },
     lastName: {
       type: String,
-      required: true,
+      required: [true, "Last name is required"],
     },
     userName: {
       type: String,
-      required: true,
+      required: [true, "Username is required"],
       unique: true,
     },
     password: {
       type: String,
-      required: true,
-      minlenght: 6,
+      required: [true, "Password is required"],
+      minlength: [6, "Password must be at least 6 characters"],
     },
     avatar: {
       type: String,
@@ -34,5 +38,4 @@ const userSchema = new mongoose.Schema(
 );
 
 const User = mongoose.model("User", userSchema);
-
 export default User;

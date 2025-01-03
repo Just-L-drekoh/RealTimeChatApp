@@ -1,13 +1,14 @@
 import jwt from "jsonwebtoken";
-import { User } from "../models/user.model.js";
+import User from "../models/user.model.js";
 
 export const protectRoute = async (req, res, next) => {
   try {
     const token = req.cookies.jwt;
-    1;
+
     if (!token) {
-      return res.status(401).json({ message: "Not authorized" });
+      return res.status(401).json({ message: "Not authorized, token missing" });
     }
+
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     const user = await User.findById(decoded.id).select("-password");
@@ -17,9 +18,9 @@ export const protectRoute = async (req, res, next) => {
     }
 
     req.user = user;
-
     next();
   } catch (error) {
-    console.error(error);
+    console.error("Error in protectRoute middleware:", error.message);
+    return res.status(401).json({ message: "Not authorized, invalid token" });
   }
 };
